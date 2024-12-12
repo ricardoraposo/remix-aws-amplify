@@ -1,0 +1,24 @@
+version: 1
+baseDirectory: .amplify-hosting
+frontend:
+  phases:
+    preBuild:
+      commands:
+        - npm i -g pnpm
+        - pnpm i --frozen-lockfile
+    build:
+      commands:
+        - pnpm build
+        - mv build .amplify-hosting
+        - mv .amplify-hosting/client .amplify-hosting/static
+        - mkdir -p .amplify-hosting/compute
+        - mv .amplify-hosting/server .amplify-hosting/compute/default
+        - pnpm i --frozen-lockfile --production 
+        - cp package.json .amplify-hosting/compute/default
+        - cp -r node_modules .amplify-hosting/compute/default
+        - cp server.js .amplify-hosting/compute/default
+        - cp deploy-manifest.json .amplify-hosting/deploy-manifest.json
+  artifacts:
+    files:
+      - "**/*"
+    baseDirectory: .amplify-hosting
